@@ -65,7 +65,7 @@ function llamarBusqueda() {
             elemento.innerHTML = `
           <div class="card " style="width: 18rem;">
   <img src="${personajeFiltrado.obtenerFoto()}" class="card-img-top" alt="...">
-  <div class="card-body">
+  <div class="card-body h-50" >
     <h5 class="card-title" class="tpersonaje">${personajeFiltrado.obtenerNombre()}</h5>
     <p class="card-text">Origen ${personajeFiltrado.obtenerOrigen()} Genero: ${personajeFiltrado.obtenerGenero()}</p>
     <a href="#" class="btn btn-primary">Mas información</a>
