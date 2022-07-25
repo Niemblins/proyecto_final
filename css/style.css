@@ -6,22 +6,21 @@
 
 main {
     background-color: rgb(237, 240, 241);
+    margin-top: 163px;
 }
 
-.titulo1 {
-    text-align: left;
-    color: rgb(136, 131, 131);
-}
 
 .busqueda {
     display: flex;
 }
+
 
 .tpersonaje {
     color: rgb(78, 84, 84);
 }
 
 /* Float four columns side by side */
+
 .column {
     float: left;
     width: 25%;
@@ -29,12 +28,16 @@ main {
     margin-top: 10px;
 }
 
+
 /* Remove extra left and right margins, due to padding */
+
 .row {
     margin: 10px 0 -5px 0;
 }
 
+
 /* Clear floats after the columns */
+
 .row:after {
     content: "";
     display: table;
@@ -42,6 +45,7 @@ main {
 }
 
 /* Responsive columns */
+
 @media screen and (max-width: 600px) {
     .column {
         width: 100%;
@@ -50,13 +54,16 @@ main {
     }
 }
 
+
 /* Style the counter cards */
+
 .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     padding: 16px;
-    text-align: center;
+    text-align: left;
     background-color: #f1f1f1;
 }
+
 .head-img{
     width: 100%;
     height: 30%;
@@ -66,6 +73,10 @@ main {
 .head-titulo{
     color:white;
     text-align: center;
+    position: absolute;
+    left: 25%;
     padding: 7px;
-    margin: 3px;
+    margin: 12px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 3px;
 }
