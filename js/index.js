@@ -1,9 +1,11 @@
 class Personaje {
-    constructor(name, image, homeworld, gender) {
+    constructor(name, image, homeworld, gender, cybernetics, affiliations) {
         this.name = name;
         this.image = image;
         this.homeworld = homeworld;
         this.gender = gender;
+        this.cybernetics = cybernetics;
+        this.affiliations = affiliations;
     }
 
     obtenerNombre() {
@@ -18,6 +20,12 @@ class Personaje {
     obtenerGenero(){
         return this.gender;
     }
+    obtenerCiber(){
+      return this.cybernetics;
+    }
+    obtenerAlianzas(){
+      return this,affiliations;
+    }
 }
 
 let personajes = [];
@@ -30,7 +38,7 @@ async function getPersonajes() {
     const data = await response.json();
 
     data.forEach(datum => {
-        let nuevoPersonaje = new Personaje(datum.name, datum.image, datum.homeworld, datum.gender)
+        let nuevoPersonaje = new Personaje(datum.name, datum.image, datum.homeworld, datum.gender, datum.affiliations)
         personajes.push(nuevoPersonaje);
     });
 
@@ -67,8 +75,8 @@ function llamarBusqueda() {
   <img src="${personajeFiltrado.obtenerFoto()}" class="card-img-top" alt="...">
   <div class="card-body h-50" >
     <h5 class="card-title" class="tpersonaje">${personajeFiltrado.obtenerNombre()}</h5>
-    <p class="card-text">Origen ${personajeFiltrado.obtenerOrigen()} Genero: ${personajeFiltrado.obtenerGenero()}</p>
-    <a href="#" class="btn btn-primary">Mas información</a>
+    <p class="card-text">Origen ${personajeFiltrado.obtenerOrigen()} Genero: ${personajeFiltrado.obtenerGenero()} Cuenta con ${personajeFiltrado.obtenerCiber()} ${personajeFiltrado.obtenerAlianzas()} </p>
+    <a href="#" class="btn btn-primary">Regresar</a>
   </div>
 </div>
         `
