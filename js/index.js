@@ -13,7 +13,7 @@ class Personaje {
         return this.image;
     }
     obtenerOrigen() {
-        return this.homeworld;
+       return this.homeworld;
     }
     obtenerGenero(){
         return this.gender;
@@ -76,8 +76,92 @@ function llamarBusqueda() {
 
     }
 
-    // console.log(consulta);
+   // console.log(consulta);
 
 }
 
 getPersonajes();
+
+
+/*
+
+class Personaje {
+    constructor(name, image) {
+      this.name = name;
+      this.image = image;
+    }
+  
+    obtenerNombre() {
+      return this.name;
+    }
+  
+    obtenerFoto() {
+      return this.image;
+    }
+  }
+  
+  let personajes = [];
+  let elemento = document.getElementById("personajes-wrapper");
+  
+  async function getPersonajes () {
+    let url = "https://akabab.github.io/starwars-api/api/all.json";
+    
+    const response = await fetch(url);
+    const data = await response.json();
+  
+    data.forEach(datum => {
+      let nuevoPersonaje = new Personaje(datum.name, datum.image)
+      personajes.push(nuevoPersonaje);
+    });
+  
+    personajes.forEach((personaje) => {
+  
+      elemento.innerHTML += `
+        <div class="column">
+          <div class="card">
+            <h3 class="tpersonaje">${personaje.obtenerNombre()}</h3>
+            <p>
+              <img src="${personaje.obtenerFoto()}" height="300" width="250" />
+            </p>
+          </div>
+        </div>
+        `
+    })
+  }
+  
+  function reiniciarData() {
+    personajes.length = 0;
+    elemento.innerHTML = null;
+    getPersonajes();
+  }
+  
+  function llamarBusqueda() {
+    console.log('llamarBusqueda')
+    const consulta = document.getElementById("buscador").value;
+    const personajesFiltrados = personajes.filter(personaje => personaje.name === consulta)
+  
+    if (personajesFiltrados.length > 0) {
+      personajesFiltrados.forEach((personajeFiltrado) => {
+        elemento.innerHTML = `
+          <div class="column">
+            <div class="card">
+              <h3 class="tpersonaje">${personajeFiltrado.obtenerNombre()}</h3>
+              <p>
+                <img src="${personajeFiltrado.obtenerFoto()}" height="300" width="250" />
+              </p>
+            </div>
+          </div>
+        `
+      })
+      
+    }
+  
+    // console.log(consulta);
+  
+  }
+  
+  getPersonajes();
+
+*/
+  
+  
