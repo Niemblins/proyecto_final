@@ -24,12 +24,45 @@ class Personaje {
     return this.cybernetics;
   }
   obtenerAlianzas() {
-    return this, affiliations;
+    return this.affiliations;
   }
 }
 
 let personajes = [];
 let elemento = document.getElementById("personajes-wrapper");
+
+function buildCharacterCard(nombre, foto, origen, genero) {
+  return `
+  <div class="card " style="width: 18rem;">
+      <img src="${foto}" class="card-img-top h-50" alt="...">
+      <div class="card-body">
+          <h5 class="card-title" class="tpersonaje">${nombre}</h5>
+          <p class="card-text">Origen: ${origen} <br> Genero: ${genero}
+          </p>
+          <button id="btn-info" class="btn btn-primary">Más información</button>
+          
+      </div>
+  </div>
+`
+}
+
+function buildCharacterCard2(nombre, foto, origen, genero, ciber, alianzas) {
+  return `
+  <div class="card " style="width: 18rem;">
+      <img src="${foto}" class="card-img-top h-50" alt="...">
+      <div class="card-body">
+          <h5 class="card-title" class="tpersonaje">${nombre}</h5>
+          <p class="card-text">Origen: ${origen} <br> Genero: ${genero} <br> Cuenta con: <br> ${ciber} <br> ${alianzas}
+          </p>
+          <button id="btn-atras" class="btn btn-primary">Regresar</button>
+          
+      </div>
+  </div>
+`
+
+}
+
+
 
 async function getPersonajes() {
   let url = "https://akabab.github.io/starwars-api/api/all.json";
@@ -38,23 +71,18 @@ async function getPersonajes() {
   const data = await response.json();
 
   data.forEach(datum => {
-    let nuevoPersonaje = new Personaje(datum.name, datum.image, datum.homeworld, datum.gender, datum.affiliations)
+    let nuevoPersonaje = new Personaje(datum.name, datum.image, datum.homeworld, datum.gender,datum.cybernetics, datum.affiliations)
     personajes.push(nuevoPersonaje);
   });
 
   personajes.forEach((personaje) => {
 
-    elemento.innerHTML += `
-            <div class="card " style="width: 18rem;">
-                <img src="${personaje.obtenerFoto()}" class="card-img-top h-50" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title" class="tpersonaje">${personaje.obtenerNombre()}</h5>
-                    <p class="card-text">Origen ${personaje.obtenerOrigen()} Genero ${personaje.obtenerGenero()}
-                    </p>
-                    <a href="#" class="btn btn-primary">Mas información</a>
-                </div>
-            </div>
-`
+    elemento.innerHTML +=  buildCharacterCard(
+      personaje.obtenerNombre(),
+      personaje.obtenerFoto(),
+      personaje.obtenerOrigen(),
+      personaje.obtenerGenero()
+    )
   })
 }
 
@@ -65,27 +93,31 @@ function reiniciarData() {
 }
 
 function llamarBusqueda() {
-  console.log('llamarBusqueda')
+  //console.log('llamarBusqueda')
+  setTimeout(()=>{
   const consulta = document.getElementById("buscador").value;
-  const personajesFiltrados = personajes.filter(personaje => personaje.name === consulta)
+  const personajesFiltrados = personajes.filter(personaje => personaje.name.toLowerCase().includes(consulta.toLowerCase()))
 
   if (personajesFiltrados.length > 0) {
+    elemento.innerHTML = null
     personajesFiltrados.forEach((personajeFiltrado) => {
-      elemento.innerHTML = `
-          <div class="card " style="width: 18rem;">
-  <img src="${personajeFiltrado.obtenerFoto()}" class="card-img-top" alt="...">
-  <div class="card-body h-50" >
-    <h5 class="card-title" class="tpersonaje">${personajeFiltrado.obtenerNombre()}</h5>
-    <p class="card-text">Origen ${personajeFiltrado.obtenerOrigen()} Genero: ${personajeFiltrado.obtenerGenero()} Cuenta con ${personajeFiltrado.obtenerCiber()} ${personajeFiltrado.obtenerAlianzas()} </p>
-    <a href="#" class="btn btn-primary">Regresar</a>
-  </div>
-</div>
-        `
+      elemento.innerHTML += buildCharacterCard2(
+        personajeFiltrado.obtenerNombre(),
+        personajeFiltrado.obtenerFoto(),
+        personajeFiltrado.obtenerOrigen(),
+        personajeFiltrado.obtenerGenero(),
+        personajeFiltrado.obtenerCiber(),
+        personajeFiltrado.obtenerAlianzas()
+      )
     })
 
   }
-
-  // console.log(consulta);
+  const atras = document.getElementById('btn-atras')
+  atras.addEventListener('click', () => {
+    location.reload();
+  })
+},500);
+  
 
 }
 
@@ -93,84 +125,78 @@ getPersonajes();
 
 
 /*
-
 class Personaje {
-    constructor(name, image) {
-      this.name = name;
-      this.image = image;
-    }
-  
-    obtenerNombre() {
-      return this.name;
-    }
-  
-    obtenerFoto() {
-      return this.image;
-    }
+  constructor(name, image) {
+    this.name = name;
+    this.image = image;
   }
-  
-  let personajes = [];
-  let elemento = document.getElementById("personajes-wrapper");
-  
-  async function getPersonajes () {
-    let url = "https://akabab.github.io/starwars-api/api/all.json";
-    
-    const response = await fetch(url);
-    const data = await response.json();
-  
-    data.forEach(datum => {
-      let nuevoPersonaje = new Personaje(datum.name, datum.image)
-      personajes.push(nuevoPersonaje);
-    });
-  
-    personajes.forEach((personaje) => {
-  
-      elemento.innerHTML += `
-        <div class="column">
-          <div class="card">
-            <h3 class="tpersonaje">${personaje.obtenerNombre()}</h3>
-            <p>
-              <img src="${personaje.obtenerFoto()}" height="300" width="250" />
-            </p>
-          </div>
-        </div>
-        `
-    })
+
+  obtenerNombre() {
+    return this.name;
   }
-  
-  function reiniciarData() {
-    personajes.length = 0;
-    elemento.innerHTML = null;
-    getPersonajes();
+
+  obtenerFoto() {
+    return this.image;
   }
+}
+
+let personajes = [];
+let elemento = document.getElementById("personajes-wrapper");
+
+function buildCharacterCard(nombre, foto) {
+  return `
+    <div class="column">
+      <div class="card">
+        <h3 class="tpersonaje">${nombre}</h3>
+        <p>
+          <img src="${foto}" height="300" width="250" />
+        </p>
+      </div>
+    </div>
+  `
+}
+
+async function getPersonajes () {
+  let url = "https://akabab.github.io/starwars-api/api/all.json";
   
-  function llamarBusqueda() {
-    console.log('llamarBusqueda')
+  const response = await fetch(url);
+  const data = await response.json();
+
+  data.forEach(datum => {
+    let nuevoPersonaje = new Personaje(datum.name, datum.image)
+    personajes.push(nuevoPersonaje);
+  });
+
+  personajes.forEach((personaje) => {
+
+    elemento.innerHTML += buildCharacterCard(
+      personaje.obtenerNombre(),
+      personaje.obtenerFoto()
+    )
+  })
+}
+
+function reiniciarData() {
+  personajes.length = 0;
+  elemento.innerHTML = null;
+  getPersonajes();
+}
+
+function llamarBusqueda() {
+  setTimeout(() => {
     const consulta = document.getElementById("buscador").value;
-    const personajesFiltrados = personajes.filter(personaje => personaje.name === consulta)
+    const personajesFiltrados = personajes.filter(personaje => personaje.name.toLowerCase().includes(consulta.toLowerCase()))
   
     if (personajesFiltrados.length > 0) {
+      elemento.innerHTML = null
       personajesFiltrados.forEach((personajeFiltrado) => {
-        elemento.innerHTML = `
-          <div class="column">
-            <div class="card">
-              <h3 class="tpersonaje">${personajeFiltrado.obtenerNombre()}</h3>
-              <p>
-                <img src="${personajeFiltrado.obtenerFoto()}" height="300" width="250" />
-              </p>
-            </div>
-          </div>
-        `
+        elemento.innerHTML += buildCharacterCard(
+          personajeFiltrado.obtenerNombre(),
+          personajeFiltrado.obtenerFoto()
+        )
       })
-      
     }
-  
-    // console.log(consulta);
-  
-  }
-  
-  getPersonajes();
+  }, 500);
+}
 
-*/
-
-
+getPersonajes();*/
