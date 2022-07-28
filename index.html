@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -24,11 +23,18 @@
                     width="100px" height="50px">
 
                 <form class="d-flex" role="search">
+                    
                     <div class="busqueda">
-                        <input class="form-control me-2" type="search" placeholder="Busca a tu personaje favorito"
+                        <select name="sort" id="sort" onchange="ordenarPersonajes()" class="form-select" >
+                            <option value="none">Sin ordenar</option>
+                            <option value="mayor">Inicio</option>
+                            <option value="menor" >Final</option>
+                        </select>
+                        <input class="form-control me-2" type="text" placeholder="Busca a tu personaje favorito"
                             aria-label="Search" id="buscador">
                         <button type="button" onclick="llamarBusqueda()" class="btn btn-outline-light">Buscar</button>
                         <button onclick="reiniciarData()" class="btn btn-outline-light">Reiniciar</button>
+                        
                     </div>
                 </form>
             </div>
