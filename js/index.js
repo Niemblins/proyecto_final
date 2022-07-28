@@ -1,5 +1,7 @@
 class Personaje {
-  constructor(name, image, homeworld, gender, cybernetics, affiliations) {
+  constructor(datos) {
+    const { name, image, homeworld, gender, cybernetics, affiliations } = datos
+
     this.name = name;
     this.image = image;
     this.homeworld = homeworld;
@@ -26,6 +28,14 @@ class Personaje {
   obtenerAlianzas() {
     return this.affiliations;
   }
+  obtenerInfo() {
+    return `
+    <ul>
+      <li> Origen: ${this.homeworld} 
+      <li> Genero: ${this.gender} 
+    </ul> 
+  `
+  }
 }
 
 let personajes = [];
@@ -34,6 +44,17 @@ let elemento = document.getElementById("personajes-wrapper");
 const inputBuscador = document.getElementById("buscador")
 //inputBuscador.addEventListener('keyup', llamarBusqueda)
 
+function obtenerMasInfo(nombre) {
+  const labelNombre = `mas-info-${nombre.replace(/([a-z])([A-Z])/g, '$1-$2')
+    .replace(/[\s_]+/g, '-')
+    .toLowerCase()}`
+  const masInfo = document.getElementById(labelNombre)
+
+  selectedPersonaje = personajes.filter(personaje => personaje.name === nombre).pop()
+
+  masInfo.innerHTML = selectedPersonaje.obtenerInfo()
+}
+
 function buildCharacterCard(nombre, foto) {
   return `
   <div class="card " style="width: 18rem;">
@@ -41,15 +62,16 @@ function buildCharacterCard(nombre, foto) {
       <div class="card-body">
           <h5 class="card-title" class="tpersonaje">${nombre}</h5>
 
-          <div id="masInfo">
-          <button id="btn-info" class="btn btn-primary" onclick="masInformacion()" >Más información</button>
-          </div>
-          
+          <p>
+          <button type="button"  class="btn btn-primary" onclick="obtenerMasInfo('${nombre}')" >Más información</button>
+          </p>
+          <p id="mas-info-${nombre.replace(/([a-z])([A-Z])/g, "$1-$2")
+      .replace(/[\s_]+/g, '-')
+      .toLowerCase()}"></p>
       </div>
   </div>
 `
 }
-
 
 async function getPersonajes() {
   let url = "https://akabab.github.io/starwars-api/api/all.json";
@@ -58,23 +80,17 @@ async function getPersonajes() {
   const data = await response.json();
 
   data.forEach(datum => {
-    let nuevoPersonaje = new Personaje(datum.name, datum.image, datum.homeworld, datum.gender,datum.cybernetics, datum.affiliations)
+    let nuevoPersonaje = new Personaje(datum)
     personajes.push(nuevoPersonaje);
   });
 
   personajes.forEach((personaje) => {
 
-    elemento.innerHTML +=  buildCharacterCard(
+    elemento.innerHTML += buildCharacterCard(
       personaje.obtenerNombre(),
       personaje.obtenerFoto()
     )
   })
-}
-
-function masInformacion(){
-  document.getElementById('btn-info')
-  
-  
 }
 
 function reiniciarData() {
@@ -84,8 +100,9 @@ function reiniciarData() {
 }
 function buildCharacterCard2(nombre, foto, origen, genero, ciber, alianzas) {
   return `
-  <div class="card " style="width: 18rem;">
-      <img src="${foto}" class="card-img-top h-50" alt="...">
+  <div class="m-4 d-flex justify-content-center">
+  <div class="card " style="width: 50rem; ">
+      <img src="${foto}" class="card-img-top h-auto" alt="...">
       <div class="card-body">
           <h5 class="card-title" class="tpersonaje">${nombre}</h5>
           <p class="card-text">Origen: ${origen} <br> Genero: ${genero} <br> Cuenta con: <br> ${ciber} <br> ${alianzas}
@@ -94,39 +111,39 @@ function buildCharacterCard2(nombre, foto, origen, genero, ciber, alianzas) {
           
       </div>
   </div>
+  </div>
 `
 
 }
 
 function llamarBusqueda() {
-  setTimeout(()=>{
-  const consulta = document.getElementById("buscador").value;
-  const personajesFiltrados = personajes.filter(personaje => personaje.name.toLowerCase().includes(consulta.toLowerCase()))
+  setTimeout(() => {
+    const consulta = inputBuscador.value;
+    const personajesFiltrados = personajes.filter(personaje => personaje.name.toLowerCase().includes(consulta.toLowerCase()))
 
-  if (personajesFiltrados.length > 0) {
-    elemento.innerHTML = null
-    personajesFiltrados.forEach((personajeFiltrado) => {
-      elemento.innerHTML += buildCharacterCard2(
-        personajeFiltrado.obtenerNombre(),
-        personajeFiltrado.obtenerFoto(),
-        personajeFiltrado.obtenerOrigen(),
-        personajeFiltrado.obtenerGenero(),
-        personajeFiltrado.obtenerCiber(),
-        personajeFiltrado.obtenerAlianzas()
-      )
+    if (personajesFiltrados.length > 0) {
+      elemento.innerHTML = null
+      personajesFiltrados.forEach((personajeFiltrado) => {
+        elemento.innerHTML += buildCharacterCard2(
+          personajeFiltrado.obtenerNombre(),
+          personajeFiltrado.obtenerFoto(),
+          personajeFiltrado.obtenerOrigen(),
+          personajeFiltrado.obtenerGenero(),
+          personajeFiltrado.obtenerCiber(),
+          personajeFiltrado.obtenerAlianzas()
+        )
+      })
+
+    }
+
+    const atras = document.getElementById('btn-atras')
+    atras.addEventListener('click', () => {
+      reiniciarData();
     })
-
-  }
-  
-  
-  const atras = document.getElementById('btn-atras')
-  atras.addEventListener('click', () => {
-    reiniciarData();
-  })
-},500);
-  
-
+  }, 500);
 }
+
+
 function ordenarPersonajes() {
   const selector = document.getElementById("sort").value
 
@@ -135,7 +152,7 @@ function ordenarPersonajes() {
     return null
   }
 
-  const personajesOrdenados = personajes.sort((a,b) => {
+  const personajesOrdenados = personajes.sort((a, b) => {
     let personajeA = a.name.toLowerCase()
     let personajeB = b.name.toLowerCase()
 
